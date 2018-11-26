@@ -1,0 +1,2 @@
+StockPriceSimulator\bin\*
+StockPriceSimulator\obj\*

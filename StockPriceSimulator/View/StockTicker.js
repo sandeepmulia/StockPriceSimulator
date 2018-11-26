@@ -1,9 +1,20 @@
-﻿$(function () {
+﻿if (!String.prototype.supplant) {
+    String.prototype.supplant = function (o) {
+        return this.replace(/{([^{}]*)}/g,
+            function (a, b) {
+                var r = o[b];
+                return typeof r === 'string' || typeof r === 'number' ? r : a;
+            }
+        );
+    };
+}
+
+$(function () {
 
     var connection = $.hubConnection();
     var stockTickerHubProxy = connection.createHubProxy('stocktickerHub');
     connection.logging = true;
-    var rowTemplate = '<tr data-symbol="{Symbol}"><td>{Symbol}</td><td>{Price}</td><td>{DayOpen}</td><td>{Direction} {Change}</td><td>{PercentChange}</td></tr>';
+    var rowTemplate = '<tr data-symbol="{Symbol}"><td>{Symbol}</td><td>{Bid}</td><td>{Ask}</td><td>{Last}</td><td>{Close}</td></tr>';
     var table = $('#stockTickerGrid');
     var stockTickerGridBody = table.find('tbody');
 
@@ -17,16 +28,30 @@
 
     $("#refreshBtn").click(function () {
         console.log("Refresh button clicked");
-        stockTickerHubProxy.invoke('', $('#symbol').val(), $('#bid').val());
+        stockTickerHubProxy.invoke('getAllTickers').done(function (stocks) {
+            $.each(stocks, function () {
+                console.log(this.Symbol + ":" + this.Bid);
+                var stock = formatStock(this);
+                stockTickerGridBody.append(rowTemplate.supplant(stock));
+            });
+        });
     });
+
+    stockTickerHubProxy.updateStockPrice = function (stock) {
+        var displayStock = formatStock(stock),
+            $row = $(rowTemplate.supplant(displayStock));
+
+        stockTickerGridBody.find('tr[data-symbol=' + stock.Symbol + ']')
+            .replaceWith($row);
+    }
 
     function init() {
         stockTickerHubProxy.invoke('getAllTickers', function (stocks) {
             console.log("INIT...");
             $.each(stocks, function () {
-                consol.log(this.Symbol + ":" + this.Bid);
+                console.log(this.Symbol + ":" + this.Bid);
                 var stock = formatStock(this);
-                $stockTickerGridBody.append(rowTemplate.supplant(stock));
+                stockTickerGridBody.append(rowTemplate.supplant(stock));
             });
         });
     }
