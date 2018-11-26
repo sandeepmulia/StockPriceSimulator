@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Price Simulator</title>
+	<meta charset="utf-8" />
+</head>
+<body>
+    <h2>Stock Ticker Grid</h2>
+    <button id="refreshBtn">Refresh Prices</button>
+    <div id="stockTickerGrid">
+        <table border="1">
+            <thead>
+                <tr><th>Symbol</th><th>Bid</th><th>Ask</th><th>Last</th><th>Close</th></tr>
+            </thead>
+            <tbody>
+                <tr class="loading"><td colspan="5">loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Library references-->
+    <script src="/scripts/jquery-1.6.4.min.js"></script>
+    <script src="/scripts/jquery.signalR-2.4.0.js"></script>   
+    <script src="StockTicker.js"></script>
+</body>
+</html>

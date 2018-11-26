@@ -133,7 +133,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -152,13 +154,16 @@
     <Content Include="scripts\jquery-1.6.4.min.js" />
     <Content Include="scripts\jquery.signalR-2.4.0.js" />
     <Content Include="scripts\jquery.signalR-2.4.0.min.js" />
+    <Content Include="View\StockTicker.js" />
+    <Content Include="View\StockTicker.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementation\StockPriceSimulatorHub.cs" />
+    <Compile Include="Implementation\StockTickerSimulatorHub.cs" />
     <Compile Include="Implementation\StockTickerSimulatorImpl.cs" />
     <Compile Include="Model\Stock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
