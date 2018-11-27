@@ -9,6 +9,10 @@ using System.Diagnostics;
 
 namespace StockPriceSimulator.Implementation
 {
+    /// <summary>
+    /// The Server hub class making use of SignalR to publish price updates and
+    /// acting as the gateway between the javascript client and implementation class
+    /// </summary>
     [HubName("stocktickerHub")]
     public class StockTickerSimulatorHub : Hub
     {

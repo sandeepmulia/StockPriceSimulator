@@ -79,5 +79,20 @@ namespace StockPriceSimulator.Model
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            var stk = obj as Stock;
+            if (stk == null) return false;
+            return this.Symbol == stk.Symbol &&
+                   this.Last == stk.Last &&
+                   this.Bid == stk.Bid &&
+                   this.Ask == stk.Ask &&
+                   this.Close == stk.Close;
+        }
+
+        public override int GetHashCode()
+        {
+            return Symbol.GetHashCode() ^ Last.GetHashCode() ^ Bid.GetHashCode() ^ Ask.GetHashCode() ^ Close.GetHashCode();
+        }
     }
 }

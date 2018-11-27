@@ -11,12 +11,18 @@ using System.Web;
 
 namespace StockPriceSimulator.Implementation
 {
+    /// <summary>
+    /// The Implementation class which contains the methods used by the server hub class
+    /// Contains the core logic to maintain the updated price list of ticker symbols and
+    /// publisher routines
+    /// </summary>
     public sealed class StockTickerSimulatorImpl
     {
         private static readonly Lazy<StockTickerSimulatorImpl> lazyInst =
             new Lazy<StockTickerSimulatorImpl>(() => new StockTickerSimulatorImpl(GlobalHost.ConnectionManager.GetHubContext<StockTickerSimulatorHub>().Clients), true);
 
         private ConcurrentDictionary<string, Stock> _tickerDataStore = new ConcurrentDictionary<string, Stock>();
+        //TODO: Make refresh interval and Symbol list configurable
         private const int _refreshInterval = 5000;
 
         private readonly List<string> _symbols = new List<string>()
