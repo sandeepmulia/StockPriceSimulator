@@ -24,10 +24,21 @@ namespace StockPriceSimulator.Implementation
             _stockTickerImpl = inst;
         }
 
+        [HubMethodName("findSpecificTickers")]
+        public IEnumerable<Stock> FindSpecificTickers(string symbol)
+        {
+            return _stockTickerImpl.FindSpecificTickers(symbol);
+        }
 
+        [HubMethodName("subscribeMktDataForSpecifiedTickers")]
+        public IEnumerable<Stock> SubscribeMarketDataForSpecifiedTickers(string symbol)
+        {
+            return _stockTickerImpl.SubscribeMarketDataForSpecifiedTickers(symbol);
+        }
+
+        [HubMethodName("getAllTickers")]
         public IEnumerable<Stock> GetAllTickers()
         {
-            Debug.WriteLine("GetAllTickers...");
             return _stockTickerImpl.GetAllTickerData();
         }
     }

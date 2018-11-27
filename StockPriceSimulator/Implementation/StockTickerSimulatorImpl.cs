@@ -4,6 +4,7 @@ using StockPriceSimulator.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Web;
@@ -22,13 +23,14 @@ namespace StockPriceSimulator.Implementation
         {
             "NAB.AX", "ANZ.AX", "WBC.AX", "MQG.AX", "BHP.AX", "RIO.AX", "WES.AX", "A2M.AX"
         };
+        private IEnumerable<Stock> _subscriptionTicker = new List<Stock>();
 
         public static StockTickerSimulatorImpl Instance { get { return lazyInst.Value; } }
         private readonly Timer _timer;
         private static object _locker = new object();
         private readonly Random r;
 
-        private StockTickerSimulatorImpl(IHubConnectionContext<dynamic> client)
+        private StockTickerSimulatorImpl(IHubConnectionContext<dynamic> clients)
         {
             _symbols.ForEach((sym) => _tickerDataStore.TryAdd(sym, new Stock()
             {
@@ -41,6 +43,7 @@ namespace StockPriceSimulator.Implementation
 
             _timer = new Timer(TickerUpdate, null, _refreshInterval, _refreshInterval);
             r = new Random();
+            Clients = clients;
         }
 
         private IHubConnectionContext<dynamic> Clients
@@ -49,19 +52,39 @@ namespace StockPriceSimulator.Implementation
             set;
         }
 
-
         public IEnumerable<Stock> GetAllTickerData()
         {
             return _tickerDataStore.Values;
+        }
+
+        public IEnumerable<Stock> FindSpecificTickers(string symbol)
+        {
+            List<Stock> result = new List<Stock>();
+            _tickerDataStore.Values.ToList().ForEach( ticker =>
+           {
+               if (ticker.Symbol.Contains(symbol))
+                   result.Add(ticker);
+           });
+            return result;
+        }
+
+        public IEnumerable<Stock> SubscribeMarketDataForSpecifiedTickers(string symbol)
+        {
+            _subscriptionTicker = FindSpecificTickers(symbol);
+            return _subscriptionTicker;
         }
 
         private void TickerUpdate(object state)
         {
             lock (_locker)
             {
-                _tickerDataStore.Values.ToList().ForEach((stock) =>
+                _subscriptionTicker.ToList().ForEach(subs =>
                {
-                   UpdateAndPublishTicker(stock);
+                   Stock stock;
+                   if (_tickerDataStore.TryGetValue(subs.Symbol, out stock))
+                   {
+                       UpdateAndPublishTicker(stock);
+                   }
                });
             }
         }
@@ -79,7 +102,9 @@ namespace StockPriceSimulator.Implementation
             if (_tickerDataStore.TryUpdate(stock.Symbol, newStkObj, stock))
             {
                 if (Clients != null)
+                {
                     Clients.All.UpdateTicker(stock);
+                }
             }
         }
     }
