@@ -27,8 +27,9 @@ namespace StockPriceSimulator.Implementation
 
         private readonly List<string> _symbols = new List<string>()
         {
-            "NAB.AX", "ANZ.AX", "WBC.AX", "MQG.AX", "BHP.AX", "RIO.AX", "WES.AX", "A2M.AX"
+            "AGL.AX","AMC.AX","AMP.AX","ANZ.AX","APA.AX","ALL.AX","ASX.AX","AZJ.AX","BHP.AX","BXB.AX","CTX.AX","COH.AX","CBA.AX","CPU.AX","CSL.AX","DXS.AX","FMG.AX","GMG.AX","GPT.AX","IAG.AX","JHX.AX","LLC.AX","MQG.AX","MPL.AX","MGR.AX","NAB.AX","NCM.AX","OSH.AX","ORI.AX","ORG.AX","QAN.AX","QBE.AX","RHC.AX","RIO.AX","STO.AX","SCG.AX","SHL.AX","S32.AX","SGP.AX","SUN.AX","SYD.AX","TLS.AX","TCL.AX","TWE.AX","URW.AX","VCX.AX","WES.AX","WBC.AX","WPL.AX","WOW.AX"
         };
+
         private IEnumerable<Stock> _subscriptionTicker = new List<Stock>();
 
         public static StockTickerSimulatorImpl Instance { get { return lazyInst.Value; } }
